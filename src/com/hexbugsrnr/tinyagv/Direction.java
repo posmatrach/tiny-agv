@@ -1,5 +1,7 @@
 package com.hexbugsrnr.tinyagv;
 
+import java.util.Random;
+
 /**
  * Created by null on 9/06/16.
  */
@@ -14,9 +16,28 @@ public enum Direction
     SOUTHEAST(1, -1),
     SOUTHWEST(-1, -1);
 
-    protected int dx;
+    static final Random RANDOM = new Random();
 
-    protected int dy;
+    static public Direction getRandomDirection()
+    {
+        int i = RANDOM.nextInt(8);
+        switch (i)
+        {
+            case 0: return Direction.NORTH;
+            case 1: return Direction.NORTHEAST;
+            case 2: return Direction.EAST;
+            case 3: return Direction.SOUTHEAST;
+            case 4: return Direction.SOUTH;
+            case 5: return Direction.SOUTHWEST;
+            case 6: return Direction.WEST;
+            case 7: return Direction.NORTHWEST;
+            default: return Direction.NORTH;
+        }
+    }
+
+    protected final int dx;
+
+    protected final int dy;
 
     Direction(int dx, int dy)
     {
@@ -29,18 +50,8 @@ public enum Direction
         return dx;
     }
 
-    public void setDx(int dx)
-    {
-        this.dx = dx;
-    }
-
     public int getDy()
     {
         return dy;
-    }
-
-    public void setDy(int dy)
-    {
-        this.dy = dy;
     }
 }

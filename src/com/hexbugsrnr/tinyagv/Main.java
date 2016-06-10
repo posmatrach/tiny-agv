@@ -1,73 +1,110 @@
 package com.hexbugsrnr.tinyagv;
 
-import java.util.ArrayList;
+
+import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
+import java.util.Scanner;
 
 public class Main {
 
-	private static Direction getRandomDirection()
-	{
-		Random r = new Random();
-		int i = r.nextInt(8);
-		switch (i)
-		{
-			case 0: return Direction.NORTH;
-			case 1: return Direction.NORTHEAST;
-			case 2: return Direction.EAST;
-			case 3: return Direction.SOUTHEAST;
-			case 4: return Direction.SOUTH;
-			case 5: return Direction.SOUTHWEST;
-			case 6: return Direction.WEST;
-			case 7: return Direction.NORTHWEST;
-			default: return Direction.NORTH;
-		}
-	}
-
     public static void main(String[] args)
     {
-        List<SimpleAsyncVehicle> vehicles = new ArrayList<>();
+	    Scanner scanner = new Scanner(System.in);
 
-        if(args.length <= 0)
-        {
-            System.out.println("Numbers of vehicles not selected. Exiting...");
-            System.exit(0);
-        }
+	    printBanner();
+	    printCommandList();
 
-        int vehicleNum = Integer.parseInt(args[0]);
+	    boolean stopped = false;
 
-        for (int i = 0; i < vehicleNum; i++)
-        {
-            SimpleAsyncVehicle v = new SimpleAsyncVehicle("AGV_" + i, new Coordinates(0, 0), null);
-            vehicles.add(v);
-            try
-            {
-                v.sendMessage(new Message(MessageType.DIRECTION, getRandomDirection()));
-                v.sendMessage(new Message(MessageType.START));
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        }
+	    while(!stopped)
+	    {
+		    String commandString = scanner.nextLine();
+		    List<String> commands = Arrays.asList(commandString.split(" "));
 
-        try
-        {
-            Thread.sleep(1000);
-        } catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
+		    if(commands.size() < 1)
+			    System.out.println("> Invalid command!");
 
-        for (SimpleAsyncVehicle v : vehicles)
-        {
-            try
-            {
-	            System.out.println("Sending stop message.");
-	            v.sendMessage(new Message(MessageType.STOP));
-            } catch (InterruptedException e)
-            {
-                e.printStackTrace();
-            }
-        }
-    }
+		    String command = commands.get(0).toUpperCase();
+
+		    if("QUIT".equals(command))
+		    {
+				stopped = true;
+		    }
+		    else if("FLEET".equals(command))
+			    System.out.println("> Current number of vehicles: " + AGVControlCenter.getNumberOfVehicles());
+		    else if("ADD".equals(command))
+		    {
+			    String vID = AGVControlCenter.newAGV();
+			    System.out.println("> Added vehicle with ID: " + vID);
+		    }
+		    else
+		    {
+			    if(!AGVControlCenter.vehicleExists(command))
+			    {
+				    System.out.println("> Invalid vehicle ID: " + command);
+				    continue;
+			    }
+
+			    if(commands.size() > 1)
+			        processVehicleCommand(commands);
+			    else
+				    queryVehicleStats(command);
+		    }
+	    }
+
+	    System.out.println("> TinyAGV terminating...");
+	    System.exit(0);
+	}
+
+	private static void processVehicleCommand(List<String> commands)
+	{
+		String vehicleID = commands.get(0).toUpperCase();
+		MessageType t;
+		Direction d = null;
+		try
+		{
+			t = MessageType.valueOf(commands.get(1).toUpperCase());
+			if (commands.size() == 3)
+				d = Direction.valueOf(commands.get(2).toUpperCase());
+			AGVControlCenter.sendMessage(vehicleID, new Message(t, d));
+		}
+		catch(IllegalArgumentException e)
+		{
+			System.out.println("> Unrecognized command.");
+		}
+	}
+	
+	private static void queryVehicleStats(String vehicleID)
+	{
+		Direction d = AGVControlCenter.getDirection(vehicleID);
+		Coordinates l = AGVControlCenter.getLocation(vehicleID);
+
+		System.out.println("> Vehicle: " + vehicleID);
+		System.out.println(l == null ? "> Location: unknown" : "> Location: (" + l.getX() + ", " + l.getY() + ")");
+		System.out.println(d == null ? "> Direction: unknown" : "> Direction: " + d);
+	}
+
+	private static void printBanner()
+	{
+		System.out.println("****************************************");
+		System.out.println("***                                  ***");
+		System.out.println("***             TinyAGV              ***");
+		System.out.println("***                                  ***");
+		System.out.println("****************************************");
+		System.out.println("");
+	}
+
+	private static void printCommandList()
+	{
+		System.out.println("> Usage");
+		System.out.println(">> FLEET: Displays number of vehicle instances.");
+		System.out.println(">> ADD: Creates a new vehicle.");
+		System.out.println(">> {VEHICLE_ID}: Displays status of the vehicle.");
+		System.out.println(">> {VEHICLE_ID} DIRECTION {NORTH|NORTHEAST|EAST|SOUTHEAST|SOUTH|SOUTHWEST|WEST|NORTHWEST}: Sets direction of the vehicle.");
+		System.out.println(">> {VEHICLE_ID} START: Sets vehicle in motion.");
+		System.out.println(">> {VEHICLE_ID} STOP: Stops the vehicle.");
+		System.out.println(">> QUIT: Quits the application.");
+		System.out.println("");
+		System.out.println("> Awaiting command...");
+	}
 }
