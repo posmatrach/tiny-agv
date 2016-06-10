@@ -38,7 +38,7 @@ public class Main {
 
         for (int i = 0; i < vehicleNum; i++)
         {
-            SimpleAsyncVehicle v = new SimpleAsyncVehicle(new Coordinates(0, 0));
+            SimpleAsyncVehicle v = new SimpleAsyncVehicle("AGV_" + i, new Coordinates(0, 0), null);
             vehicles.add(v);
             try
             {
