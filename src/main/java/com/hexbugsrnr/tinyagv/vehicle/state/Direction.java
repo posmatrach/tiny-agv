@@ -1,4 +1,4 @@
-package com.hexbugsrnr.tinyagv;
+package com.hexbugsrnr.tinyagv.vehicle.state;
 
 import java.util.Random;
 

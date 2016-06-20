@@ -1,4 +1,4 @@
-package com.hexbugsrnr.tinyagv;
+package com.hexbugsrnr.tinyagv.vehicle.state;
 
 /**
  * Created by null on 9/06/16.
