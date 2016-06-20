@@ -51,6 +51,7 @@ public class Vehicle extends Thread
 			while(state != null)
 			{
 				Message message = commandQueue.take();
+				System.out.println("[" + id + "] Received command: " + message.toString());
 				CommandStateHandler stateHandler = stateHandlerMap.get(message.getClass());
 				if (stateHandler != null)
 					this.state = stateHandler.transformState(id, message, state, eventQueue);

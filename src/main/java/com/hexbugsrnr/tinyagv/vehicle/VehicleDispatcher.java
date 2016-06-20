@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Main class of the Tiny-AGV system.
+ * Core class of the Tiny-AGV system.
  *
  * Vehicle Dispatcher is in charge of creating vehicles and keeping
  * references to message (command) queues of every created vehicle.
@@ -72,5 +72,26 @@ public class VehicleDispatcher
 		vehicleCommandQueues.put(id, queue);
 		vehicleFactory.create(id, new Coordinates(0, 0), queue).start();
 		return id;
+	}
+
+	/**
+	 * Get the number of assigned vehicle IDs and message queues.
+	 *
+	 * @return Number of vehicle IDs associatied with message ques.
+	 */
+	public int getNumberOfVehicles()
+	{
+		return vehicleCommandQueues.size();
+	}
+
+	/**
+	 * Check if given ID is assigned to a vehicle.
+	 *
+	 * @param id
+	 * @return
+	 */
+	public boolean vehicleIdExists(String id)
+	{
+		return vehicleCommandQueues.containsKey(id);
 	}
 }

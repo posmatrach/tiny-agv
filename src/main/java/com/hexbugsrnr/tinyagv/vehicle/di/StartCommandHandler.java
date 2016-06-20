@@ -18,6 +18,6 @@ public class StartCommandHandler implements CommandStateHandler
 		if(currentState.getDirection() == null || (currentState instanceof MovingVehicleState))
 			return currentState;
 
-		return new MovingVehicleState(currentState, eventQueue);
+		return new MovingVehicleState(currentState, id, eventQueue);
 	}
 }

@@ -11,5 +11,9 @@ import com.hexbugsrnr.tinyagv.vehicle.protocol.interfaces.Message;
  */
 public class DestroyVehicle implements Message
 {
-	// Intentionally left empty.
+	@Override
+	public String toString()
+	{
+		return "DESTROY";
+	}
 }

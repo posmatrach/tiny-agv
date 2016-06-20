@@ -7,4 +7,9 @@ import com.hexbugsrnr.tinyagv.vehicle.protocol.interfaces.Message;
  */
 public class StartVehicle implements Message
 {
+	@Override
+	public String toString()
+	{
+		return "START";
+	}
 }

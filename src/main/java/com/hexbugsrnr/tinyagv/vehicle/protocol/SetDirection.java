@@ -19,4 +19,10 @@ public class SetDirection implements Message
 	{
 		return direction;
 	}
+
+	@Override
+	public String toString()
+	{
+		return "DIRECTION - " + direction;
+	}
 }
